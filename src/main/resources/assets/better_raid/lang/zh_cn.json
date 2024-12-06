@@ -1,0 +1,9 @@
+{
+  "better_raid.raidInfo.totalRaidersAlive": "剩余袭击者:",
+  "better_raid.raidInfo.waveCount": "当前波次/总波次:",
+  "better_raid.raidInfo.difficulty": "难度:",
+  "better_raid.raidInfo.level": "等级:",
+  "better_raid.raidInfo.nextWaveTime": "下一波:",
+  "better_raid.waveInfo.nextWave": "下一波:",
+  "better_raid.waveInfo.currentWave": "第%s波:"
+}

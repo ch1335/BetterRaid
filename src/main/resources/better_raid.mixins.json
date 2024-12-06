@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "com.chen1335.betterRaid.mixins.minecraft",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "RaiderMixin",
+    "RaidMixin"
+  ],
+  "client": [
+  ],
+  "minVersion": "0.8"
+}
