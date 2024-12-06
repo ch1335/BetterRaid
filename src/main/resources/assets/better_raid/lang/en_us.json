@@ -1,0 +1,9 @@
+{
+  "better_raid.raidInfo.totalRaidersAlive": "Total Raiders Alive",
+  "better_raid.raidInfo.waveCount": "Current Wave/Total Wave:",
+  "better_raid.raidInfo.difficulty": "Difficulty:",
+  "better_raid.raidInfo.level": "level:",
+  "better_raid.raidInfo.nextWaveTime": "Next Wave:",
+  "better_raid.waveInfo.nextWave": "Next Wave",
+  "better_raid.waveInfo.currentWave": "The %sth wave:"
+}
