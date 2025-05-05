@@ -1,6 +1,5 @@
 package com.chen1335.betterRaid.network;
 
-import com.chen1335.betterRaid.BetterRaid;
 import com.chen1335.betterRaid.client.hud.RaidInfoHud;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;

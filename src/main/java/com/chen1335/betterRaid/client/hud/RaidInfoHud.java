@@ -1,5 +1,6 @@
 package com.chen1335.betterRaid.client.hud;
 
+import com.chen1335.betterRaid.Config;
 import com.chen1335.betterRaid.network.RaidInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 public class RaidInfoHud implements IGuiOverlay {
     private static RaidInfoHud INSTANCE;
+    private Config.HudPosition lastPosition = Config.HudPosition.TOP_LEFT;
 
     @Nullable
     public RaidInfo raidInfo;
@@ -25,23 +27,34 @@ public class RaidInfoHud implements IGuiOverlay {
         if (raidInfo == null) {
             return;
         }
+        
         Font font = Minecraft.getInstance().font;
         int i = 0;
+        
+        // 只在位置发生变化时应用预设位置
+        if (lastPosition != Config.hudPosition) {
+            Config.applyHudPosition(Config.hudPosition, screenWidth, screenHeight);
+            lastPosition = Config.hudPosition;
+        }
+        
+        int baseX = 8 + Config.hudOffsetX;
+        int baseY = Config.hudOffsetY;
+        
         Difficulty difficulty = Difficulty.byId(raidInfo.difficulty);
         Component hardInfo = Component.translatable("better_raid.raidInfo.difficulty").append(difficulty.getDisplayName()).append(Component.literal(" | ")).append(Component.translatable("better_raid.raidInfo.level")).append(String.valueOf(raidInfo.raidOmenLevel));
-        guiGraphics.drawString(font, hardInfo, 18, i, 16777215);
+        guiGraphics.drawString(font, hardInfo, baseX, baseY + i, 16777215);
         i = i + 9;
 
         int timeLeftTick = raidInfo.raidCooldownTicks;
         int timeLeftSecond = timeLeftTick / 20;
         Component nextWaveTime = Component.translatable("better_raid.raidInfo.nextWaveTime").append(String.valueOf(timeLeftSecond)).append("s");
-        guiGraphics.drawString(font, nextWaveTime, 18, i, 16777215);
+        guiGraphics.drawString(font, nextWaveTime, baseX, baseY + i, 16777215);
         i = i + 9;
 
         TextureAtlasSprite textureatlassprite = Minecraft.getInstance().getMobEffectTextures().get(MobEffects.BAD_OMEN);
-        guiGraphics.blit(0, 0, 0, 18, 18, textureatlassprite);
+        guiGraphics.blit(baseX - 18, baseY, 0, 18, 18, textureatlassprite);
         Component totalRaidersAliveComponent = Component.translatable("better_raid.raidInfo.totalRaidersAlive").append(String.valueOf(raidInfo.totalRaidersAlive));
-        guiGraphics.drawString(font, totalRaidersAliveComponent, 18, i, 16777215);
+        guiGraphics.drawString(font, totalRaidersAliveComponent, baseX, baseY + i, 16777215);
         i = i + 9;
 
         int numGroups = raidInfo.numGroups;
@@ -49,7 +62,7 @@ public class RaidInfoHud implements IGuiOverlay {
             numGroups++;
         }
         Component waveCount = Component.translatable("better_raid.raidInfo.waveCount").append(raidInfo.groupsSpawned + "/" + numGroups);
-        guiGraphics.drawString(font, waveCount, 18, i, 16777215);
+        guiGraphics.drawString(font, waveCount, baseX, baseY + i, 16777215);
         i = i + 9;
     }
 
