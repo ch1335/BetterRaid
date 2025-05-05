@@ -1,6 +1,7 @@
 package com.chen1335.betterRaid.mixinsAPI.minecraft;
 
 import com.chen1335.betterRaid.Config;
+import com.chen1335.betterRaid.network.Payloads;
 import com.chen1335.betterRaid.network.RaidInfo;
 import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPos;
@@ -13,7 +14,6 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.entity.raid.Raider;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -83,7 +83,7 @@ public class RaidModifier {
         if (difficulty == null) {
             difficulty = raid.getLevel().getDifficulty();
         }
-        PacketDistributor.sendToPlayer(serverPlayer, new RaidInfo(raid.getTotalRaidersAlive(), raid.getGroupsSpawned(), raid.numGroups, raid.getRaidOmenLevel(), difficulty.getId(), raid.raidCooldownTicks));
+        Payloads.sendToPlayer(serverPlayer, new RaidInfo(raid.getTotalRaidersAlive(), raid.getGroupsSpawned(), raid.numGroups, raid.getBadOmenLevel(), difficulty.getId(), raid.raidCooldownTicks));
     }
 
     public void spawnGroupFinish(Raid raid) {

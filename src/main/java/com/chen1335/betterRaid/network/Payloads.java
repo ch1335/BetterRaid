@@ -1,18 +1,33 @@
 package com.chen1335.betterRaid.network;
 
 import com.chen1335.betterRaid.BetterRaid;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.fml.common.Mod;
 
-@EventBusSubscriber(modid = BetterRaid.MODID, bus = EventBusSubscriber.Bus.MOD)
+
+@Mod.EventBusSubscriber(modid = BetterRaid.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Payloads {
-    @SubscribeEvent
-    public static void register(final RegisterPayloadHandlersEvent event) {
-        final PayloadRegistrar registrar = event.registrar("1");
-        registrar.playToClient(RaidInfo.TYPE, RaidInfo.STREAM_CODEC, RaidInfo::clientHandler);
-        registrar.playToClient(RaidMessage.TYPE, RaidMessage.STREAM_CODEC, RaidMessage::clientHandler);
-        registrar.playToClient(SimpleDataSetter.TYPE, SimpleDataSetter.STREAM_CODEC, SimpleDataSetter::clientHandler);
+    private static final String PROTOCOL_VERSION = "1";
+    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
+            ResourceLocation.fromNamespaceAndPath(BetterRaid.MODID, "main"),
+            () -> PROTOCOL_VERSION,
+            PROTOCOL_VERSION::equals,
+            PROTOCOL_VERSION::equals
+    );
+
+    private static int id = 0;
+
+    public static void register() {
+        INSTANCE.registerMessage(id++, RaidInfo.class, RaidInfo::encode, RaidInfo::decode, RaidInfo::handle);
+        INSTANCE.registerMessage(id++, RaidMessage.class, RaidMessage::encode, RaidMessage::decode, RaidMessage::handle);
+        INSTANCE.registerMessage(id++, SimpleDataSetter.class, SimpleDataSetter::encode, SimpleDataSetter::decode, SimpleDataSetter::handle);
+    }
+
+    public static <MSG> void sendToPlayer(ServerPlayer player, MSG message) {
+        INSTANCE.sendTo(message, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 }

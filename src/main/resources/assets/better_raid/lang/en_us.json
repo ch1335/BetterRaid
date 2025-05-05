@@ -1,4 +1,11 @@
 {
+  "better_raid.config.title": "Better Raid Configuration",
+  "better_raid.config.save": "Save",
+  "better_raid.config.auto_next_wave": "Auto Enter Next Wave",
+  "better_raid.config.auto_next_wave.tooltip": "When enabled, raid will automatically enter the next wave",
+  "better_raid.config.auto_enter_ticks": "Auto Enter Delay (ticks)",
+
+
   "better_raid.raidInfo.totalRaidersAlive": "Total Raiders Alive",
   "better_raid.raidInfo.waveCount": "Current Wave/Total Wave:",
   "better_raid.raidInfo.difficulty": "Difficulty:",

@@ -1,4 +1,11 @@
 {
+  "better_raid.config.title": "更好的袭击配置",
+  "better_raid.config.save": "保存",
+  "better_raid.config.auto_next_wave": "自动进入下一波",
+  "better_raid.config.auto_next_wave.tooltip": "启用后，袭击将自动进入下一波",
+  "better_raid.config.auto_enter_ticks": "自动进入下一波的延迟（刻）",
+
+
   "better_raid.raidInfo.totalRaidersAlive": "剩余袭击者:",
   "better_raid.raidInfo.waveCount": "当前波次/总波次:",
   "better_raid.raidInfo.difficulty": "难度:",
