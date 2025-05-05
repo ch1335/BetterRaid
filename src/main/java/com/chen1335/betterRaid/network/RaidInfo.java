@@ -2,17 +2,13 @@ package com.chen1335.betterRaid.network;
 
 import com.chen1335.betterRaid.BetterRaid;
 import com.chen1335.betterRaid.client.hud.RaidInfoHud;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
-public class RaidInfo implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<RaidInfo> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(BetterRaid.MODID, "raid_info"));
+import java.util.function.Supplier;
+
+public class RaidInfo {
     public int totalRaidersAlive;
     public int groupsSpawned;
     public int numGroups;
@@ -20,15 +16,18 @@ public class RaidInfo implements CustomPacketPayload {
     public int difficulty;
     public int raidCooldownTicks;
 
-    public static final SimpleDataSetter.DataSetterType<Integer> RAID_COOLDOWN_TICKS_SETTER = SimpleDataSetter.DataSetterType.create(ByteBufCodecs.VAR_INT, integer -> {
+    public static final SimpleDataSetter.DataSetterType<Integer> RAID_COOLDOWN_TICKS_SETTER = SimpleDataSetter.DataSetterType.create(integer -> {
         RaidInfoHud.getInstance().flatMap(RaidInfoHud::geInfo).ifPresent(raidInfo -> raidInfo.raidCooldownTicks = integer);
     });
-    public static final SimpleDataSetter.DataSetterType<Integer> TOTAL_RAIDERS_ALIVE_SETTER = SimpleDataSetter.DataSetterType.create(ByteBufCodecs.VAR_INT, integer -> {
+    public static final SimpleDataSetter.DataSetterType<Integer> TOTAL_RAIDERS_ALIVE_SETTER = SimpleDataSetter.DataSetterType.create(integer -> {
         RaidInfoHud.getInstance().flatMap(RaidInfoHud::geInfo).ifPresent(raidInfo -> raidInfo.totalRaidersAlive = integer);
     });
-    public static final SimpleDataSetter.DataSetterType<Integer> GROUPS_SPAWNED_SETTER = SimpleDataSetter.DataSetterType.create(ByteBufCodecs.VAR_INT, integer -> {
+    public static final SimpleDataSetter.DataSetterType<Integer> GROUPS_SPAWNED_SETTER = SimpleDataSetter.DataSetterType.create(integer -> {
         RaidInfoHud.getInstance().flatMap(RaidInfoHud::geInfo).ifPresent(raidInfo -> raidInfo.groupsSpawned = integer);
     });
+
+    public RaidInfo() {}
+
     public RaidInfo(int totalRaidersAlive, int groupsSpawned, int numGroups, int raidOmenLevel, int difficulty, int raidCooldownTicks) {
         this.totalRaidersAlive = totalRaidersAlive;
         this.groupsSpawned = groupsSpawned;
@@ -38,34 +37,34 @@ public class RaidInfo implements CustomPacketPayload {
         this.raidCooldownTicks = raidCooldownTicks;
     }
 
-    public static final StreamCodec<ByteBuf, RaidInfo> STREAM_CODEC = StreamCodec.of(
-            (buffer, value) -> {
-                ByteBufCodecs.VAR_INT.encode(buffer, value.totalRaidersAlive);
-                ByteBufCodecs.VAR_INT.encode(buffer, value.groupsSpawned);
-                ByteBufCodecs.VAR_INT.encode(buffer, value.numGroups);
-                ByteBufCodecs.VAR_INT.encode(buffer, value.raidOmenLevel);
-                ByteBufCodecs.VAR_INT.encode(buffer, value.difficulty);
-                ByteBufCodecs.VAR_INT.encode(buffer, value.raidCooldownTicks);
-            },
-            buffer -> {
-                Integer totalRaidersAlive = ByteBufCodecs.VAR_INT.decode(buffer);
-                Integer groupsSpawned = ByteBufCodecs.VAR_INT.decode(buffer);
-                Integer numGroups = ByteBufCodecs.VAR_INT.decode(buffer);
-                Integer raidOmenLevel = ByteBufCodecs.VAR_INT.decode(buffer);
-                Integer difficulty = ByteBufCodecs.VAR_INT.decode(buffer);
-                Integer raidCooldownTicks = ByteBufCodecs.VAR_INT.decode(buffer);
-                return new RaidInfo(totalRaidersAlive, groupsSpawned, numGroups, raidOmenLevel, difficulty, raidCooldownTicks);
-            }
-    );
-
-    @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public static void encode(RaidInfo message, FriendlyByteBuf buffer) {
+        buffer.writeVarInt(message.totalRaidersAlive);
+        buffer.writeVarInt(message.groupsSpawned);
+        buffer.writeVarInt(message.numGroups);
+        buffer.writeVarInt(message.raidOmenLevel);
+        buffer.writeVarInt(message.difficulty);
+        buffer.writeVarInt(message.raidCooldownTicks);
     }
 
-    public void clientHandler(IPayloadContext iPayloadContext) {
-        if (iPayloadContext.player() instanceof LocalPlayer) {
-            RaidInfoHud.getInstance().ifPresent(raidInfoHud -> raidInfoHud.setInfo(this));
-        }
+    public static RaidInfo decode(FriendlyByteBuf buffer) {
+        int totalRaidersAlive = buffer.readVarInt();
+        int groupsSpawned = buffer.readVarInt();
+        int numGroups = buffer.readVarInt();
+        int raidOmenLevel = buffer.readVarInt();
+        int difficulty = buffer.readVarInt();
+        int raidCooldownTicks = buffer.readVarInt();
+        return new RaidInfo(totalRaidersAlive, groupsSpawned, numGroups, raidOmenLevel, difficulty, raidCooldownTicks);
+    }
+
+    public static void handle(RaidInfo message, Supplier<NetworkEvent.Context> contextSupplier) {
+        NetworkEvent.Context context = contextSupplier.get();
+        context.enqueueWork(() -> {
+            if (context.getSender() == null && context.getDirection().getReceptionSide().isClient()) {
+                if (net.minecraft.client.Minecraft.getInstance().player instanceof LocalPlayer) {
+                    RaidInfoHud.getInstance().ifPresent(raidInfoHud -> raidInfoHud.setInfo(message));
+                }
+            }
+        });
+        context.setPacketHandled(true);
     }
 }

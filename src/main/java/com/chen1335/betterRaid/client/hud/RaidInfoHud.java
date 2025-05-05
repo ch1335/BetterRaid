@@ -1,28 +1,27 @@
 package com.chen1335.betterRaid.client.hud;
 
 import com.chen1335.betterRaid.network.RaidInfo;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffects;
-import org.jetbrains.annotations.NotNull;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class RaidInfoHud implements LayeredDraw.Layer {
+public class RaidInfoHud implements IGuiOverlay {
     private static RaidInfoHud INSTANCE;
 
     @Nullable
     public RaidInfo raidInfo;
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, @NotNull DeltaTracker deltaTracker) {
+    public void render(ForgeGui gui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight) {
         if (raidInfo == null) {
             return;
         }
@@ -39,7 +38,7 @@ public class RaidInfoHud implements LayeredDraw.Layer {
         guiGraphics.drawString(font, nextWaveTime, 18, i, 16777215);
         i = i + 9;
 
-        TextureAtlasSprite textureatlassprite = Minecraft.getInstance().getMobEffectTextures().get(MobEffects.RAID_OMEN);
+        TextureAtlasSprite textureatlassprite = Minecraft.getInstance().getMobEffectTextures().get(MobEffects.BAD_OMEN);
         guiGraphics.blit(0, 0, 0, 18, 18, textureatlassprite);
         Component totalRaidersAliveComponent = Component.translatable("better_raid.raidInfo.totalRaidersAlive").append(String.valueOf(raidInfo.totalRaidersAlive));
         guiGraphics.drawString(font, totalRaidersAliveComponent, 18, i, 16777215);

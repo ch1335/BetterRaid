@@ -1,17 +1,15 @@
 package com.chen1335.betterRaid.mixins.minecraft;
 
 import com.chen1335.betterRaid.mixinsAPI.minecraft.RaidModifier;
+import com.chen1335.betterRaid.network.Payloads;
 import com.chen1335.betterRaid.network.RaidMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.entity.raid.Raider;
-import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -58,14 +56,14 @@ public abstract class RaidMixin {
 
     @ModifyArg(method = "updatePlayers", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerBossEvent;removePlayer(Lnet/minecraft/server/level/ServerPlayer;)V"))
     private ServerPlayer removePlayer(ServerPlayer player) {
-        PacketDistributor.sendToPlayer(player, new RaidMessage(0));
+        Payloads.sendToPlayer(player, new RaidMessage(0));
         return player;
     }
 
     @Inject(method = "stop", at = @At("HEAD"))
     private void stop(CallbackInfo ci) {
         raidEvent.getPlayers().forEach(serverPlayer -> {
-            PacketDistributor.sendToPlayer(serverPlayer, new RaidMessage(0));
+            Payloads.sendToPlayer(serverPlayer, new RaidMessage(0));
         });
     }
 
