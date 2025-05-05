@@ -49,7 +49,6 @@ public class BetterRaid {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-            // 注册配置屏幕
             ConfigScreen.register();
         }
     }

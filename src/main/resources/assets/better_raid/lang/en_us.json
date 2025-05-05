@@ -4,7 +4,16 @@
   "better_raid.config.auto_next_wave": "Auto Enter Next Wave",
   "better_raid.config.auto_next_wave.tooltip": "When enabled, raid will automatically enter the next wave",
   "better_raid.config.auto_enter_ticks": "Auto Enter Delay (ticks)",
-
+  "better_raid.config.hud_offset_x": "HUD Horizontal Position",
+  "better_raid.config.hud_offset_y": "HUD Vertical Position",
+  "better_raid.config.position": "HUD Position Preset",
+  "better_raid.config.position.tooltip": "Select a preset position for the HUD",
+  "better_raid.config.position.top_left": "Top Left",
+  "better_raid.config.position.top_center": "Top Center",
+  "better_raid.config.position.top_right": "Top Right",
+  "better_raid.config.position.bottom_left": "Bottom Left",
+  "better_raid.config.position.bottom_center": "Bottom Center",
+  "better_raid.config.position.bottom_right": "Bottom Right",
 
   "better_raid.raidInfo.totalRaidersAlive": "Total Raiders Alive",
   "better_raid.raidInfo.waveCount": "Current Wave/Total Wave:",
