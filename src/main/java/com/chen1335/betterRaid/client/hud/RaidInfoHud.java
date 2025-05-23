@@ -30,8 +30,7 @@ public class RaidInfoHud implements IGuiOverlay {
         
         Font font = Minecraft.getInstance().font;
         int i = 0;
-        
-        // 只在位置发生变化时应用预设位置
+
         if (lastPosition != Config.hudPosition) {
             Config.applyHudPosition(Config.hudPosition, screenWidth, screenHeight);
             lastPosition = Config.hudPosition;
