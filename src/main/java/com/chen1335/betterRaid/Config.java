@@ -38,8 +38,7 @@ public class Config {
     public static int hudOffsetX = 0;
     public static int hudOffsetY = 0;
     public static HudPosition hudPosition = HudPosition.TOP_LEFT;
-    
-    // HUD位置预设枚举
+
     public enum HudPosition {
         TOP_LEFT("better_raid.config.position.top_left"),
         TOP_CENTER("better_raid.config.position.top_center"),
@@ -58,8 +57,7 @@ public class Config {
             return translationKey;
         }
     }
-    
-    // 保存当前配置的引用，用于保存
+
     private static ModConfig CONFIG;
 
     @SubscribeEvent
@@ -74,8 +72,7 @@ public class Config {
             hudPosition = HUD_POSITION.get();
         }
     }
-    
-    // 保存配置到文件
+
     public static void saveConfig() {
         if (CONFIG != null) {
             RIDE_AUTO_NEXT_WAVE.set(rideAutoNextWave);
@@ -86,13 +83,10 @@ public class Config {
             CONFIG.save();
         }
     }
-    
-    // 根据预设位置设置偏移值
+
     public static void applyHudPosition(HudPosition position, int screenWidth, int screenHeight) {
-        // 先保存当前位置
         hudPosition = position;
-        
-        // 然后根据位置设置偏移值
+
         switch (position) {
             case TOP_LEFT:
                 hudOffsetX = 8;
