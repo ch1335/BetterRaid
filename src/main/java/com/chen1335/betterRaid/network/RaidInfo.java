@@ -18,9 +18,11 @@ public class RaidInfo {
     public static final SimpleDataSetter.DataSetterType<Integer> RAID_COOLDOWN_TICKS_SETTER = SimpleDataSetter.DataSetterType.create(integer -> {
         RaidInfoHud.getInstance().flatMap(RaidInfoHud::geInfo).ifPresent(raidInfo -> raidInfo.raidCooldownTicks = integer);
     });
+
     public static final SimpleDataSetter.DataSetterType<Integer> TOTAL_RAIDERS_ALIVE_SETTER = SimpleDataSetter.DataSetterType.create(integer -> {
         RaidInfoHud.getInstance().flatMap(RaidInfoHud::geInfo).ifPresent(raidInfo -> raidInfo.totalRaidersAlive = integer);
     });
+
     public static final SimpleDataSetter.DataSetterType<Integer> GROUPS_SPAWNED_SETTER = SimpleDataSetter.DataSetterType.create(integer -> {
         RaidInfoHud.getInstance().flatMap(RaidInfoHud::geInfo).ifPresent(raidInfo -> raidInfo.groupsSpawned = integer);
     });
