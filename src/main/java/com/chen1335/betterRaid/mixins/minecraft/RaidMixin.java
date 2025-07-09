@@ -70,17 +70,6 @@ public abstract class RaidMixin {
         nsram$spawnTickCounter = 5; // Set counter for 5 tick delay
     }
 
-    @Inject(method = "tick", at = @At("HEAD"))
-    private void tick(CallbackInfo ci) {
-        if (nsram$spawnTickCounter > 0) {
-            nsram$spawnTickCounter--;
-            if (nsram$spawnTickCounter == 0) {
-                // After 5 ticks, count mobs and update progress
-                nsram$raidModifier.countMobsAndUpdateProgress((Raid) (Object) this);
-            }
-        }
-        nsram$raidModifier.tick((Raid) (Object) this);
-    }
 
     @Inject(method = "getTotalRaidersAlive", at = @At("RETURN"), cancellable = true)
     private void getTotalRaidersAlive(CallbackInfoReturnable<Integer> cir) {
