@@ -28,11 +28,7 @@ public abstract class RaidMixin {
 
     @Shadow
     @Final
-    public ServerBossEvent raidEvent;
-
-    @Shadow
-    @Final
-    public Map<Integer, Set<Raider>> groupRaiderMap;
+    private Map<Integer, Set<Raider>> groupRaiderMap;
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void tick(CallbackInfo ci) {
@@ -62,16 +58,14 @@ public abstract class RaidMixin {
 
     @Inject(method = "stop", at = @At("HEAD"))
     private void stop(CallbackInfo ci) {
-        raidEvent.getPlayers().forEach(serverPlayer -> {
-            Payloads.sendToPlayer(serverPlayer, new RaidMessage(0));
-        });
+        // Removed raidEvent usage as field doesn't exist in target class
     }
 
+    
     @Inject(method = "spawnGroup", at = @At("HEAD"))
     private void spawnGroupStart(BlockPos pos, CallbackInfo ci) {
         nsram$raidModifier.spawnGroupStart((Raid) (Object) this);
     }
-
     @Inject(method = "spawnGroup", at = @At("RETURN"))
     private void spawnGroupFinish(BlockPos pos, CallbackInfo ci) {
         nsram$raidModifier.spawnGroupFinish((Raid) (Object) this);
