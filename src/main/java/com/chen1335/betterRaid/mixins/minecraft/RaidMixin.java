@@ -28,7 +28,7 @@ public abstract class RaidMixin {
 
     @Shadow
     @Final
-    public Map<Integer, Set<Raider>> groupRaiderMap;
+    private Map<Integer, Set<Raider>> groupRaiderMap;
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void tick(CallbackInfo ci) {
@@ -61,15 +61,15 @@ public abstract class RaidMixin {
         // Removed raidEvent usage as field doesn't exist in target class
     }
 
-    @Unique
-    private int nsram$spawnTickCounter = 0;
     
     @Inject(method = "spawnGroup", at = @At("HEAD"))
     private void spawnGroupStart(BlockPos pos, CallbackInfo ci) {
         nsram$raidModifier.spawnGroupStart((Raid) (Object) this);
-        nsram$spawnTickCounter = 5; // Set counter for 5 tick delay
     }
-
+    @Inject(method = "spawnGroup", at = @At("RETURN"))
+    private void spawnGroupFinish(BlockPos pos, CallbackInfo ci) {
+        nsram$raidModifier.spawnGroupFinish((Raid) (Object) this);
+    }
 
     @Inject(method = "getTotalRaidersAlive", at = @At("RETURN"), cancellable = true)
     private void getTotalRaidersAlive(CallbackInfoReturnable<Integer> cir) {
