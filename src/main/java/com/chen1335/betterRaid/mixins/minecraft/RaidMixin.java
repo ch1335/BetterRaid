@@ -28,10 +28,6 @@ public abstract class RaidMixin {
 
     @Shadow
     @Final
-    public ServerBossEvent raidEvent;
-
-    @Shadow
-    @Final
     public Map<Integer, Set<Raider>> groupRaiderMap;
 
     @Inject(method = "tick", at = @At("HEAD"))
@@ -62,19 +58,28 @@ public abstract class RaidMixin {
 
     @Inject(method = "stop", at = @At("HEAD"))
     private void stop(CallbackInfo ci) {
-        raidEvent.getPlayers().forEach(serverPlayer -> {
-            Payloads.sendToPlayer(serverPlayer, new RaidMessage(0));
-        });
+        // Removed raidEvent usage as field doesn't exist in target class
     }
 
+    @Unique
+    private int nsram$spawnTickCounter = 0;
+    
     @Inject(method = "spawnGroup", at = @At("HEAD"))
     private void spawnGroupStart(BlockPos pos, CallbackInfo ci) {
         nsram$raidModifier.spawnGroupStart((Raid) (Object) this);
+        nsram$spawnTickCounter = 5; // Set counter for 5 tick delay
     }
 
-    @Inject(method = "spawnGroup", at = @At("RETURN"))
-    private void spawnGroupFinish(BlockPos pos, CallbackInfo ci) {
-        nsram$raidModifier.spawnGroupFinish((Raid) (Object) this);
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void tick(CallbackInfo ci) {
+        if (nsram$spawnTickCounter > 0) {
+            nsram$spawnTickCounter--;
+            if (nsram$spawnTickCounter == 0) {
+                // After 5 ticks, count mobs and update progress
+                nsram$raidModifier.countMobsAndUpdateProgress((Raid) (Object) this);
+            }
+        }
+        nsram$raidModifier.tick((Raid) (Object) this);
     }
 
     @Inject(method = "getTotalRaidersAlive", at = @At("RETURN"), cancellable = true)
